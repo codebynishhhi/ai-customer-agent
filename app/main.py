@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from app.llm.client import call_llm
+from app.agents.intent import classify_intent
 
 app = FastAPI(title="AI Customer Support Agent")
 
@@ -17,7 +18,7 @@ def health_check():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
-    # placeholder response
-    # return ChatResponse(response="Agent is alive")
-    llm_response = call_llm("Whats today's tech market news in 200 characters.")
+    # calling the intent classifier 
+    intent = classify_intent(request.message)
+    llm_response = f"Detected Intent : {intent}"
     return ChatResponse(response=llm_response)
