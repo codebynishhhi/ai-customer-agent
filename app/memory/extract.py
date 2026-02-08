@@ -1,6 +1,7 @@
 
 import re
 
+# function to extract the order_id
 def extract_order_id(text: str):
     """
     Extracts numeric order IDs from user input.
