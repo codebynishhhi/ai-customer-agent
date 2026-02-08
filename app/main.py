@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from app.llm.client import call_llm
 from app.agents.intent import classify_intent
 from app.agents.router import route_intent
+from app.rag.store import build_store
 
 app = FastAPI(title="AI Customer Support Agent")
 
@@ -21,7 +22,11 @@ def health_check():
 def chat(request: ChatRequest):
     # calling the intent classifier 
     intent = classify_intent(request.message)
-    response = route_intent(intent, request.message)
+    response = route_intent(intent, request.message, request.session_id)
     llm_response = f"Detected Intent : {intent}"
     print(llm_response, "Intent of query")
     return ChatResponse(response=response)
+
+@app.on_event("startup")
+def startup_event():
+    build_store()
