@@ -4,6 +4,7 @@ from app.llm.client import call_llm
 from app.agents.intent import classify_intent
 from app.agents.router import route_intent
 from app.rag.store import build_store
+from app.agents.agent import run_agent
 
 app = FastAPI(title="AI Customer Support Agent")
 
@@ -21,10 +22,13 @@ def health_check():
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     # calling the intent classifier 
-    intent = classify_intent(request.message)
-    response = route_intent(intent, request.message, request.session_id)
-    llm_response = f"Detected Intent : {intent}"
-    print(llm_response, "Intent of query")
+    # intent = classify_intent(request.message)
+    # response = route_intent(intent, request.message, request.session_id)
+    # llm_response = f"Detected Intent : {intent}"
+    # print(llm_response, "Intent of query")
+    # return ChatResponse(response=response)
+
+    response = run_agent(request.session_id, request.message)
     return ChatResponse(response=response)
 
 @app.on_event("startup")
